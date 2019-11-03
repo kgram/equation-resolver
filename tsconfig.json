@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+		"strict": true,
+		"noUnusedLocals": false,
+		"stripInternal": true,
+        "lib": []
+    },
+    "files": [
+        "src/index.ts",
+    ]
+}
