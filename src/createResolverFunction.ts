@@ -3,6 +3,7 @@ import { EquationNode } from 'equation-parser'
 import { VariableLookup } from './VariableLookup'
 import { FunctionLookup } from './FunctionLookup'
 import { ResolverFunction } from './ResolverFunction'
+import { ResolveOptions } from './ResolveOptions'
 
 import { checkArgs } from './utils/checkArgs'
 import { resolve } from './resolve'
@@ -10,19 +11,20 @@ import { resolve } from './resolve'
 export const createResolverFunction = (
     argNames: string[],
     expression: EquationNode,
-    expressionVariables: VariableLookup,
-    expressionFunctions: FunctionLookup,
+    options: ResolveOptions,
 ): ResolverFunction => {
-    expressionVariables = { ...expressionVariables }
-    expressionFunctions = { ...expressionFunctions }
+    const expressionOptions = {
+        variables: { ...options.variables } as VariableLookup,
+        functions: { ...options.functions } as FunctionLookup,
+    }
 
-    return (name, args, argVariables, argFunctions) => {
+    return (name, args, argOptions) => {
         checkArgs(name, args, argNames.length, argNames.length)
 
         argNames.forEach((n, idx) => {
-            expressionVariables[n] = resolve(args[idx], argVariables, argFunctions)
+            expressionOptions.variables[n] = resolve(args[idx], argOptions)
         })
 
-        return resolve(expression, expressionVariables, expressionFunctions)
+        return resolve(expression, expressionOptions)
     }
 }

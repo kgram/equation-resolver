@@ -1,40 +1,54 @@
 import { EquationNode } from 'equation-parser'
 
 import { ResultNode, ResultNodeUnit, ResultNodeMatrix, ResultNodeNumber } from './ResultNode'
-import { FunctionLookup } from './FunctionLookup'
-import { VariableLookup } from './VariableLookup'
 import { UnitLookup } from './UnitLookup'
+import { FormatOptions } from './FormatOptions'
 
 import { resolve } from './resolve'
-import { defaultVariables } from './defaultVariables'
 import { divide } from './operators'
 import { isSameUnit, isEmptyUnit, getUnit, getUnitless, combineUnits } from './utils/units'
 
 // Attempt to simplify unit to one of these if possible
-const simplifiableUnits = ['N', 'J', 'W', 'Pa', 'Hz', 'lx', 'C', 'V', 'F', 'Ω', 'S', 'Wb', 'T', 'H', 'Gy']
+const defaultSimplifiableUnits = ['N', 'J', 'W', 'Pa', 'Hz', 'lx', 'C', 'V', 'F', 'Ω', 'S', 'Wb', 'T', 'H', 'Gy']
 
 export const format = (
-    tree: EquationNode,
-    variables: VariableLookup = {},
-    functions: FunctionLookup = {},
-    unitTree?: EquationNode,
+    equation: EquationNode,
+    unit: EquationNode | null = null,
+    options: FormatOptions = {},
 ): EquationNode => {
-    const result = resolve(tree, variables, functions)
-    let unitResult
-    if (unitTree) {
-        unitResult = resolve(unitTree, variables, functions)
-        if (!isUnitTree(unitTree) || !isUnitResult(unitResult)) {
-            throw new Error('Equation resolve: invalid unit')
-        }
-    }
+    const result = resolve(equation, options)
+
     return {
         type: 'equals',
-        a: tree,
-        b: resultToEquation(result, unitTree, unitResult),
+        a: equation,
+        b: resultToEquationWithUnit(result, unit, options),
     }
 }
 
-function resultToEquation(result: ResultNode, unitTree?: EquationNode, unitResult?: ResultNode): EquationNode {
+function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, options: FormatOptions) {
+    if (unit) {
+        const unitResult = resolve(unit, options)
+        if (!isUnitTree(unit) || !isUnitResult(unitResult)) {
+            throw new Error('Equation resolve: invalid unit')
+        }
+        const value = divide(getUnitless(result), getUnitless(unitResult))
+        const diffUnits = combineUnits(getUnit(result), getUnit(unitResult), (a, b) => a - b)
+        if (isEmptyUnit(diffUnits)) {
+            return wrapUnit(resultToEquation(value, options), unit)
+        } else {
+            return wrapUnit(resultToEquation(value, options), {
+                type: 'multiply-implicit',
+                a: unit,
+                b: unitToEquation(diffUnits),
+            })
+        }
+    } else {
+        return resultToEquation(result, options)
+    }
+
+}
+
+function resultToEquation(result: ResultNode, options: FormatOptions): EquationNode {
     switch (result.type) {
         case 'number':
             if (result.value < 0) {
@@ -50,26 +64,12 @@ function resultToEquation(result: ResultNode, unitTree?: EquationNode, unitResul
                 type: 'matrix',
                 m: result.m,
                 n: result.n,
-                values: result.values.map((row) => row.map((cell) => resultToEquation(cell))),
+                values: result.values.map((row) => row.map((cell) => resultToEquation(cell, options))),
             }
         case 'unit': {
-            if (unitTree && unitResult) {
-                const value = divide(result.value, getUnitless(unitResult))
-                const diffUnits = combineUnits(result.units, getUnit(unitResult), (a, b) => a - b)
-                if (isEmptyUnit(diffUnits)) {
-                    return wrapUnit(resultToEquation(value), unitTree)
-                } else {
-                    return wrapUnit(resultToEquation(value), {
-                        type: 'multiply-implicit',
-                        a: unitTree,
-                        b: unitToEquation(diffUnits),
-                    })
-                }
-            } else {
-                const unit = guessUnit(result)
+            const unit = guessUnit(result, options)
 
-                return wrapUnit(resultToEquation(unit.value), unitToEquation(unit.units))
-            }
+            return wrapUnit(resultToEquation(unit.value, options), unitToEquation(unit.units))
         }
     }
 }
@@ -146,9 +146,9 @@ function isUnitTree(unitTree: EquationNode): boolean {
             return unitTree.a.type === 'variable' && unitTree.b.type === 'number'
         case 'variable':
             return true
+        default:
+            return false
     }
-
-    return false
 }
 
 function isUnitResult(unitResult: ResultNode): boolean {
@@ -157,9 +157,9 @@ function isUnitResult(unitResult: ResultNode): boolean {
             return isUnitResult(unitResult.value)
         case 'number':
             return true
+        default:
+            return false
     }
-
-    return false
 }
 
 function wrapUnit(value: EquationNode, units: EquationNode): EquationNode {
@@ -182,9 +182,9 @@ function wrapUnit(value: EquationNode, units: EquationNode): EquationNode {
     }
 }
 
-function guessUnit(result: ResultNodeUnit): ResultNodeUnit {
+function guessUnit(result: ResultNodeUnit, { simplifiableUnits = defaultSimplifiableUnits, variables = {} }: FormatOptions): ResultNodeUnit {
     const unit = simplifiableUnits.find((u) => {
-        const variable = defaultVariables[u]
+        const variable = variables[u]
 
         return variable &&
             variable.type === 'unit' &&
@@ -193,7 +193,7 @@ function guessUnit(result: ResultNodeUnit): ResultNodeUnit {
     })
 
     if (unit) {
-        const variable = defaultVariables[unit] as ResultNodeUnit
+        const variable = variables[unit] as ResultNodeUnit
         return {
             type: 'unit',
             units: { [unit]: 1 },

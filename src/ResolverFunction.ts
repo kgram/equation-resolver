@@ -1,7 +1,6 @@
 import { EquationNode } from 'equation-parser'
 
 import { ResultNode } from './ResultNode'
-import { VariableLookup } from './VariableLookup'
-import { FunctionLookup } from './FunctionLookup'
+import { ResolveOptions } from './ResolveOptions'
 
-export type ResolverFunction = (name: string, args: EquationNode[], variables: VariableLookup, functions: FunctionLookup) => ResultNode
+export type ResolverFunction = (name: string, args: EquationNode[], options: ResolveOptions) => ResultNode

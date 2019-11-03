@@ -14,7 +14,7 @@ test('constant', () => {
         type: 'function',
         name: 'sum',
         args: [equationVariable('i'), equationNumber(m), equationNumber(n), equationNumber(1)],
-    }, {}, defaultFunctions)).toEqualCloseTo(resultNumber((n + 1 - m)))
+    }, { functions: defaultFunctions })).toEqualCloseTo(resultNumber((n + 1 - m)))
 })
 
 test('linear (arithmetic serries)', () => {
@@ -24,7 +24,7 @@ test('linear (arithmetic serries)', () => {
         type: 'function',
         name: 'sum',
         args: [equationVariable('i'), equationNumber(m), equationNumber(n), equationVariable('i')],
-    }, {}, defaultFunctions)).toEqualCloseTo(resultNumber((n + 1 - m) * (n + m) / 2))
+    }, { functions: defaultFunctions })).toEqualCloseTo(resultNumber((n + 1 - m) * (n + m) / 2))
 })
 
 test('exponential (geometric series)', () => {
@@ -35,5 +35,5 @@ test('exponential (geometric series)', () => {
         type: 'function',
         name: 'sum',
         args: [equationVariable('i'), equationNumber(m), equationNumber(n), { type: 'power', a: equationNumber(a), b: equationVariable('i') }],
-    }, {}, defaultFunctions)).toEqualCloseTo(resultNumber((a ** m - a ** (n + 1)) / (1 - a)))
+    }, { functions: defaultFunctions })).toEqualCloseTo(resultNumber((a ** m - a ** (n + 1)) / (1 - a)))
 })

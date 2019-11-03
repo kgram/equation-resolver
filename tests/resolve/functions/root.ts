@@ -10,5 +10,5 @@ test('default', () => {
         type: 'function',
         name: 'root',
         args: [equationNumber(3), equationNumber(125)],
-    }, {}, defaultFunctions)).toEqualCloseTo(resultNumber(5))
+    }, { functions: defaultFunctions })).toEqualCloseTo(resultNumber(5))
 })

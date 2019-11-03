@@ -10,7 +10,7 @@ test('sin', () => {
         type: 'function',
         name: 'sin',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.sin(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.sin(5)))
 })
 
 test('cos', () => {
@@ -18,7 +18,7 @@ test('cos', () => {
         type: 'function',
         name: 'cos',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.cos(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.cos(5)))
 })
 
 test('tan', () => {
@@ -26,7 +26,7 @@ test('tan', () => {
         type: 'function',
         name: 'tan',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.tan(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.tan(5)))
 })
 
 test('asin', () => {
@@ -34,7 +34,7 @@ test('asin', () => {
         type: 'function',
         name: 'asin',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.asin(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.asin(5)))
 })
 
 test('acos', () => {
@@ -42,7 +42,7 @@ test('acos', () => {
         type: 'function',
         name: 'acos',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.acos(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.acos(5)))
 })
 
 test('atan', () => {
@@ -50,7 +50,7 @@ test('atan', () => {
         type: 'function',
         name: 'atan',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.atan(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.atan(5)))
 })
 
 test('atan2', () => {
@@ -58,7 +58,7 @@ test('atan2', () => {
         type: 'function',
         name: 'atan2',
         args: [equationNumber(5), equationNumber(2)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.atan2(5, 2)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.atan2(5, 2)))
 })
 
 test('abs', () => {
@@ -66,7 +66,7 @@ test('abs', () => {
         type: 'function',
         name: 'abs',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.abs(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.abs(5)))
 })
 
 test('ceil', () => {
@@ -74,7 +74,7 @@ test('ceil', () => {
         type: 'function',
         name: 'ceil',
         args: [equationNumber(5.2)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.ceil(5.2)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.ceil(5.2)))
 })
 
 test('floor', () => {
@@ -82,7 +82,7 @@ test('floor', () => {
         type: 'function',
         name: 'floor',
         args: [equationNumber(5.2)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.floor(5.2)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.floor(5.2)))
 })
 
 test('round', () => {
@@ -90,7 +90,7 @@ test('round', () => {
         type: 'function',
         name: 'round',
         args: [equationNumber(5.4)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.round(5.4)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.round(5.4)))
 })
 
 test('max', () => {
@@ -98,7 +98,7 @@ test('max', () => {
         type: 'function',
         name: 'max',
         args: [equationNumber(5), equationNumber(2), equationNumber(9)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.max(5, 2, 9)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.max(5, 2, 9)))
 })
 
 test('min', () => {
@@ -106,7 +106,7 @@ test('min', () => {
         type: 'function',
         name: 'min',
         args: [equationNumber(5), equationNumber(2), equationNumber(9)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.min(5, 2, 9)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.min(5, 2, 9)))
 })
 
 test('pow', () => {
@@ -114,7 +114,7 @@ test('pow', () => {
         type: 'function',
         name: 'pow',
         args: [equationNumber(5), equationNumber(3)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.pow(5, 3)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.pow(5, 3)))
 })
 
 test('sqrt', () => {
@@ -122,7 +122,7 @@ test('sqrt', () => {
         type: 'function',
         name: 'sqrt',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.sqrt(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.sqrt(5)))
 })
 
 test('ln', () => {
@@ -130,7 +130,7 @@ test('ln', () => {
         type: 'function',
         name: 'ln',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toEqual(resultNumber(Math.log(5)))
+    }, { functions: defaultFunctions })).toEqual(resultNumber(Math.log(5)))
 })
 
 test('unknown', () => {
@@ -138,5 +138,5 @@ test('unknown', () => {
         type: 'function',
         name: 'unknown',
         args: [equationNumber(5)],
-    }, {}, defaultFunctions)).toThrow()
+    }, { functions: defaultFunctions })).toThrow()
 })

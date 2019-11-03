@@ -1,9 +1,8 @@
 import { EquationNode } from 'equation-parser'
 
 import { ResultNode } from './ResultNode'
-import { FunctionLookup } from './FunctionLookup'
-import { VariableLookup } from './VariableLookup'
 import { UnitLookup } from './UnitLookup'
+import { ResolveOptions } from './ResolveOptions'
 
 import { getUnit, getUnitless, isEmptyUnit, isSameUnit} from './utils/units'
 import { plus, minus, multiplyCross, multiplyDot, multiplyImplicit, divide, power } from './operators'
@@ -12,8 +11,7 @@ import { throwUnknownType } from './utils/throwUnknownType'
 
 export const resolve = (
     tree: EquationNode,
-    variables: VariableLookup = {},
-    functions: FunctionLookup = {},
+    options: ResolveOptions = {},
 ): ResultNode => {
     switch (tree.type) {
         case 'number':
@@ -22,60 +20,55 @@ export const resolve = (
                 value: parseFloat(tree.value),
             }
         case 'variable':
-            return resolveVariable(tree.name, variables)
+            return resolveVariable(tree.name, options)
         case 'positive':
-            return resolve(tree.value, variables, functions)
+            return resolve(tree.value, options)
         case 'negative':
-            return negate(resolve(tree.value, variables, functions))
+            return negate(resolve(tree.value, options))
         case 'positive-negative':
             throw new Error('Equation resolve: cannot handle ± operator')
         case 'block':
-            return resolve(tree.child, variables, functions)
+            return resolve(tree.child, options)
         case 'plus':
             return plus(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'minus':
             return minus(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'plus-minus':
             throw new Error('Equation resolve: cannot handle ± operator')
         case 'multiply-implicit':
             return multiplyImplicit(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'multiply-dot':
             return multiplyDot(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'multiply-cross':
             return multiplyCross(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'divide-fraction':
         case 'divide-inline':
             return divide(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'power':
             return power(
-                resolve(tree.a, variables, functions),
-                resolve(tree.b, variables, functions),
+                resolve(tree.a, options),
+                resolve(tree.b, options),
             )
         case 'function':
-            return resolveFunction(
-                tree.name,
-                tree.args,
-                variables,
-                functions,
-            )
+            return resolveFunction(tree.name, tree.args, options)
         case 'equals':
         case 'less-than':
         case 'less-than-equals':
@@ -87,7 +80,7 @@ export const resolve = (
             // Keep track of resolved unit
             let unit: UnitLookup | null = null
             const values = tree.values.map((row) => row.map((cell) => {
-                const value = resolve(cell, variables, functions)
+                const value = resolve(cell, options)
                 // Compare units
                 if (unit) {
                     if (!isSameUnit(unit, getUnit(value))) {
@@ -133,20 +126,20 @@ export const resolve = (
     }
 }
 
-function resolveVariable(name: string, variables: VariableLookup): ResultNode {
-    if (variables.hasOwnProperty(name)) {
-        return variables[name]
+function resolveVariable(name: string, options: ResolveOptions): ResultNode {
+    if (options.variables && options.variables.hasOwnProperty(name)) {
+        return options.variables[name]
     } else {
         throw new Error(`Equation resolve: unknown variable "${name}"`)
     }
 }
 
-function resolveFunction(name: string, args: EquationNode[], variables: VariableLookup, functions: FunctionLookup) {
+function resolveFunction(name: string, args: EquationNode[], options: ResolveOptions) {
     let func
-    if (functions.hasOwnProperty(name)) {
-        func = functions[name]
+    if (options.functions && options.functions.hasOwnProperty(name)) {
+        func = options.functions[name]
     } else {
         throw new Error(`Equation resolve: unknown function "${name}"`)
     }
-    return func(name, args, variables, functions)
+    return func(name, args, options)
 }

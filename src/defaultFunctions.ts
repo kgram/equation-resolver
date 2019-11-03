@@ -2,6 +2,7 @@ import { EquationNode } from 'equation-parser'
 
 import { FunctionLookup } from './FunctionLookup'
 import { VariableLookup } from './VariableLookup'
+import { ResolveOptions } from './ResolveOptions'
 
 import { checkArgs } from './utils/checkArgs'
 import { isInteger } from './utils/isInteger'
@@ -53,7 +54,7 @@ export const defaultFunctions: FunctionLookup = {
     ln: createNumberFunction(Math.log),
     log: createNumberFunction((x, base = 10) => Math.log(x) / Math.log(base), 1, 2),
 
-    sum: (name: string, args: EquationNode[], variables: VariableLookup, functions: FunctionLookup) => {
+    sum: (name: string, args: EquationNode[], options: ResolveOptions) => {
         checkArgs(name, args, 4, 4)
 
         const [variable, startTree, endTree, expression] = args
@@ -62,8 +63,8 @@ export const defaultFunctions: FunctionLookup = {
             throw new Error(`Equation resolve: first argument of ${name} must be a variable, not ${args[0].type}`)
         }
 
-        let start = resolve(startTree, variables, functions)
-        let end = resolve(endTree, variables, functions)
+        let start = resolve(startTree, options)
+        let end = resolve(endTree, options)
         if (!isInteger(start)) {
             throw new Error(`Equation resolve: second argument of ${name} must be an integer (is ${start})`)
         }
@@ -73,13 +74,17 @@ export const defaultFunctions: FunctionLookup = {
         if (start > end) {
             [start, end] = [end, start]
         }
-        const enhancedVariables = { ...variables }
+        const enhancedOptions = {
+            functions: options.functions,
+            variables: { ...options.variables } as VariableLookup,
+        }
+
         // Get initial value
-        enhancedVariables[variable.name] = start
-        let sum = resolve(expression, enhancedVariables, functions)
+        enhancedOptions.variables[variable.name] = start
+        let sum = resolve(expression, enhancedOptions)
         for (let i = start.value + 1; i <= end.value; i++) {
-            enhancedVariables[variable.name] = valueWrap(i)
-            sum = plus(sum, resolve(expression, enhancedVariables, functions))
+            enhancedOptions.variables[variable.name] = valueWrap(i)
+            sum = plus(sum, resolve(expression, enhancedOptions))
         }
 
         return sum
