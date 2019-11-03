@@ -1,9 +1,8 @@
 import { EquationNode } from 'equation-parser'
 
 import { ResultNodeNumber } from '../ResultNode'
-import { FunctionLookup } from '../FunctionLookup'
-import { VariableLookup } from '../VariableLookup'
 import { ResolverFunction } from '../ResolverFunction'
+import { ResolveOptions } from '../ResolveOptions'
 
 import { checkArgs } from './checkArgs'
 import { valueWrap } from '../valueWrap'
@@ -18,12 +17,11 @@ export const createNumberFunction = (
     return (
         name: string,
         args: EquationNode[],
-        variables: VariableLookup,
-        functions: FunctionLookup,
+        options: ResolveOptions,
     ) => {
         checkArgs(name, args, minArgs, maxArgs)
 
-        const resolvedArgs = args.map((arg) => resolve(arg, variables, functions))
+        const resolvedArgs = args.map((arg) => resolve(arg, options))
 
         if (!resolvedArgs.every((arg) => arg.type === 'number')) {
             throw new Error(`Equation resolve: arguments of ${name} must be numbers`)
