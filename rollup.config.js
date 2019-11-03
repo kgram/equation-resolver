@@ -1,13 +1,12 @@
 // import path from 'path'
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
-import multiInput from 'rollup-plugin-multi-input'
 
 import pkg from './package.json'
 
 export default [
     {
-        input: ['src/index.ts', 'src/defaultFunctions.ts', 'src/defaultVariables.ts'],
+        input: 'src/index.ts',
         output: [
             {
                 file: pkg.main,
@@ -19,7 +18,6 @@ export default [
             },
         ],
         plugins: [
-            multiInput(),
             resolve({
                 extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
             }),
