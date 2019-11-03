@@ -7,7 +7,7 @@ import { ResolverFunction } from './ResolverFunction'
 import { checkArgs } from './utils/checkArgs'
 import { resolve } from './resolve'
 
-export const createResolver = (
+export const createResolverFunction = (
     argNames: string[],
     expression: EquationNode,
     expressionVariables: VariableLookup,
