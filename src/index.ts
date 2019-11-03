@@ -1,3 +1,5 @@
 export { createResolverFunction } from './createResolverFunction'
 export { resolve } from './resolve'
 export { format } from './format'
+export { defaultFunctions } from './defaultFunctions'
+export { defaultVariables } from './defaultVariables'
