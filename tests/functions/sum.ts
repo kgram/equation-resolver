@@ -1,11 +1,11 @@
-import { resolve } from '../../../src'
-import { defaultFunctions } from '../../../src/defaultFunctions'
+import { resolve } from '../../src'
+import { defaultFunctions } from '../../src/defaultFunctions'
 
-import { equationVariable } from '../../helpers/equationVariable'
-import { equationNumber } from '../../helpers/equationNumber'
-import { resultNumber } from '../../helpers/resultNumber'
+import { equationVariable } from '../helpers/equationVariable'
+import { equationNumber } from '../helpers/equationNumber'
+import { resultNumber } from '../helpers/resultNumber'
 
-import '../../helpers/toEqualCloseTo'
+import '../helpers/toEqualCloseTo'
 
 test('constant', () => {
     const m = 5

@@ -1,8 +1,8 @@
-import { resolve } from '../../../src'
-import { defaultFunctions } from '../../../src/defaultFunctions'
+import { resolve } from '../../src'
+import { defaultFunctions } from '../../src/defaultFunctions'
 
-import { equationNumber } from '../../helpers/equationNumber'
-import { resultNumber } from '../../helpers/resultNumber'
+import { equationNumber } from '../helpers/equationNumber'
+import { resultNumber } from '../helpers/resultNumber'
 
 
 test('sin', () => {

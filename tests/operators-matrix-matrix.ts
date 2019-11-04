@@ -1,9 +1,9 @@
 import { EquationNode } from 'equation-parser'
 
-import { resolve } from '../../src'
+import { resolve } from '../src'
 
-import { equationNumber } from '../helpers/equationNumber'
-import { resultNumber } from '../helpers/resultNumber'
+import { equationNumber } from './helpers/equationNumber'
+import { resultNumber } from './helpers/resultNumber'
 
 const matrixA: EquationNode = {
     type: 'matrix',

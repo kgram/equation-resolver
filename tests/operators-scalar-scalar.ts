@@ -1,7 +1,7 @@
-import { resolve } from '../../src'
+import { resolve } from '../src'
 
-import { equationNumber } from '../helpers/equationNumber'
-import { resultNumber } from '../helpers/resultNumber'
+import { equationNumber } from './helpers/equationNumber'
+import { resultNumber } from './helpers/resultNumber'
 
 const runNumberSuite = (type: any, simple: (a: number, b: number) => number) => {
     expect(resolve({

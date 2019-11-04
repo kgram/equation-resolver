@@ -1,6 +1,6 @@
-import { resolve } from '../../src'
+import { resolve } from '../src'
 
-import { resultNumber } from '../helpers/resultNumber'
+import { resultNumber } from './helpers/resultNumber'
 
 test('defined', () => {
     const variable = resultNumber(5)

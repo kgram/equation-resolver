@@ -1,7 +1,7 @@
-import { resolve } from '../../src'
+import { resolve } from '../src'
 
-import { equationNumber } from '../helpers/equationNumber'
-import { resultNumber } from '../helpers/resultNumber'
+import { equationNumber } from './helpers/equationNumber'
+import { resultNumber } from './helpers/resultNumber'
 
 test('integer', () => {
     expect(resolve(equationNumber(5))).toEqual(resultNumber(5))

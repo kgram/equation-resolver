@@ -1,6 +1,6 @@
-import { resolve } from '../../src'
+import { resolve } from '../src'
 
-import { equationNumber } from '../helpers/equationNumber'
+import { equationNumber } from './helpers/equationNumber'
 
 test('any', () => {
     expect(() => resolve({
