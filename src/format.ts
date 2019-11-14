@@ -1,10 +1,11 @@
-import { EquationNode } from 'equation-parser'
+import { EquationNode, EquationParserError } from 'equation-parser'
 
 import { ResultNode, ResultNodeUnit, ResultNodeMatrix, ResultNodeNumber } from './ResultNode'
+import { EquationResolveError } from './EquationResolveError'
 import { UnitLookup } from './UnitLookup'
 import { FormatOptions } from './FormatOptions'
 
-import { resolveNode } from './resolve'
+import { resolve } from './resolve'
 import { divide } from './operators'
 import { isSameUnit, isEmptyUnit, getUnit, getUnitless, combineUnits } from './utils/units'
 
@@ -12,25 +13,66 @@ import { isSameUnit, isEmptyUnit, getUnit, getUnitless, combineUnits } from './u
 const defaultSimplifiableUnits = ['N', 'J', 'W', 'Pa', 'Hz', 'lx', 'C', 'V', 'F', 'Ω', 'S', 'Wb', 'T', 'H', 'Gy']
 
 export const format = (
-    equation: EquationNode,
+    equation: EquationNode | EquationParserError,
     unit: EquationNode | null = null,
     options: FormatOptions = {},
-): EquationNode => {
-    const result = resolveNode(equation, options)
+): EquationNode | EquationParserError | EquationResolveError => {
+    if (equation.type === 'parser-error') {
+        return equation
+    }
+
+    if (unit && !isUnitTree(unit)) {
+        return {
+            type: 'resolve-error',
+            errorType: 'invalidUnit',
+            node: equation,
+            errorNode: unit,
+            values: [],
+        }
+    }
+
+    const result = resolve(equation, options)
+    const unitResult = unit ? resolve(unit, options) : null
+
+    if (result.type === 'resolve-error') {
+        return {
+            type: 'resolve-error',
+            errorType: result.errorType,
+            node: equation,
+            errorNode: result.node,
+            values: result.values,
+        }
+    }
+
+    if (unitResult && unitResult.type === 'resolve-error') {
+        return {
+            type: 'resolve-error',
+            errorType: unitResult.errorType,
+            node: equation,
+            errorNode: unitResult.node,
+            values: unitResult.values,
+        }
+    }
+
+    if (unitResult && !isUnitResult(unitResult)) {
+        return {
+            type: 'resolve-error',
+            errorType: 'invalidUnit',
+            node: equation,
+            errorNode: unit,
+            values: [],
+        }
+    }
 
     return {
         type: 'equals',
         a: equation,
-        b: resultToEquationWithUnit(result, unit, options),
+        b: resultToEquationWithUnit(result, unit, unitResult, options),
     }
 }
 
-function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, options: FormatOptions) {
-    if (unit) {
-        const unitResult = resolveNode(unit, options)
-        if (!isUnitTree(unit) || !isUnitResult(unitResult)) {
-            throw new Error('Equation resolve: invalid unit')
-        }
+function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, unitResult: ResultNode | null, options: FormatOptions) {
+    if (unit && unitResult) {
         const value = divide(unit, getUnitless(result), getUnitless(unitResult))
         const diffUnits = combineUnits(getUnit(result), getUnit(unitResult), (a, b) => a - b)
         if (isEmptyUnit(diffUnits)) {
