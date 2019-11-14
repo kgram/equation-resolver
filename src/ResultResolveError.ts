@@ -33,6 +33,8 @@ export type ResultResolveError = {
     | 'matrixNoNesting'
 
     | 'invalidEquation'
+
+    | 'placeholder'
     ,
     node: EquationNode | null,
     values: any[],

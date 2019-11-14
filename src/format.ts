@@ -25,7 +25,7 @@ export const format = (
         return {
             type: 'resolve-error',
             errorType: 'invalidUnit',
-            node: equation,
+            node: wrapError(equation, unit),
             errorNode: unit,
             values: [],
         }
@@ -38,7 +38,7 @@ export const format = (
         return {
             type: 'resolve-error',
             errorType: result.errorType,
-            node: equation,
+            node: wrapError(equation, unit),
             errorNode: result.node,
             values: result.values,
         }
@@ -48,7 +48,7 @@ export const format = (
         return {
             type: 'resolve-error',
             errorType: unitResult.errorType,
-            node: equation,
+            node: wrapError(equation, unit),
             errorNode: unitResult.node,
             values: unitResult.values,
         }
@@ -58,7 +58,7 @@ export const format = (
         return {
             type: 'resolve-error',
             errorType: 'invalidUnit',
-            node: equation,
+            node: wrapError(equation, unit),
             errorNode: unit,
             values: [],
         }
@@ -70,6 +70,18 @@ export const format = (
         b: resultToEquationWithUnit(result, unit, unitResult, options),
     }
 }
+
+const wrapError = (equation: EquationNode, unit: EquationNode | null): EquationNode => ({
+    type: 'equals',
+    a: equation,
+    b: unit
+        ? {
+            type: 'multiply-implicit',
+            a: { type: 'operand-placeholder' },
+            b: unit,
+        }
+        : { type: 'operand-placeholder' },
+})
 
 function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, unitResult: ResultNode | null, options: FormatOptions) {
     if (unit && unitResult) {

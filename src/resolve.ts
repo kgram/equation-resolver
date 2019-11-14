@@ -153,6 +153,11 @@ export const resolveNode = (
                 }
             }
         }
+        case 'function-placeholder':
+        case 'operand-placeholder':
+        case 'operator-placeholder':
+        case 'operator-unary-placeholder':
+            throw new ResolverError('placeholder', node)
         default:
             return throwUnknownType(node, (type) => `Equation resolve: cannot resolve type "${type}"`)
     }

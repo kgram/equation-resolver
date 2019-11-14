@@ -1663,10 +1663,10 @@ end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-equation-parser@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/equation-parser/-/equation-parser-0.0.5.tgz#ea338c83f96b1e89ad97bae0483d2aae7beb5675"
-  integrity sha512-cU/bw97qLPHEGa1FMoi8AMdwFZ/9g47gZKlK2FQ2CK+7fLGuZzRaRgJJN9iPasweNlounIPLL7dPRLW0RWaYQA==
+equation-parser@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/equation-parser/-/equation-parser-0.1.0.tgz#0dde407a26584392020e2c8baa92f8d881f7ccc5"
+  integrity sha512-Z/i63RaSt7IdX45nnpQV2mpp7W0tv7/BMrTHnGURyHt8ccXFuboZtE0nl/+Ms3BFJWLPjLQrnKeIvilkJvZ5Qg==
 
 error-ex@^1.3.1:
   version "1.3.2"
