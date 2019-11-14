@@ -6,7 +6,7 @@ import { ResolverFunction } from './ResolverFunction'
 import { ResolveOptions } from './ResolveOptions'
 
 import { checkArgs } from './utils/checkArgs'
-import { resolve } from './resolve'
+import { resolveNode } from './resolve'
 
 export const createResolverFunction = (
     argNames: string[],
@@ -18,13 +18,13 @@ export const createResolverFunction = (
         functions: { ...options.functions } as FunctionLookup,
     }
 
-    return (name, args, argOptions) => {
-        checkArgs(name, args, argNames.length, argNames.length)
+    return (node, argOptions) => {
+        checkArgs(node, argNames.length, argNames.length)
 
         argNames.forEach((n, idx) => {
-            expressionOptions.variables[n] = resolve(args[idx], argOptions)
+            expressionOptions.variables[n] = resolveNode(node.args[idx], argOptions)
         })
 
-        return resolve(expression, expressionOptions)
+        return resolveNode(expression, expressionOptions)
     }
 }

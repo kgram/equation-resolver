@@ -1,11 +1,9 @@
-import { EquationNode } from 'equation-parser'
+import { EquationNodeFunction } from 'equation-parser'
 
-export const checkArgs = (name: string, args: EquationNode[], minArgs: number, maxArgs: number) => {
-    if (args.length < minArgs || args.length > maxArgs) {
-        if (minArgs === maxArgs) {
-            throw new Error(`Equation resolve: function "${name}" takes ${minArgs} arguments, not ${args.length}`)
-        } else {
-            throw new Error(`Equation resolve: function "${name}" takes ${minArgs}-${maxArgs} arguments, not ${args.length}`)
-        }
+import { ResolverError } from './ResolverError'
+
+export const checkArgs = (node: EquationNodeFunction, minArgs: number, maxArgs: number) => {
+    if (node.args.length < minArgs || node.args.length > maxArgs) {
+        throw new ResolverError('functionArgs', node, minArgs, maxArgs)
     }
 }

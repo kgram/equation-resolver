@@ -1,6 +1,7 @@
 import { resolve } from '../src'
 
 import { resultNumber } from './helpers/resultNumber'
+import { failResolve } from './helpers/failResolve'
 
 test('defined', () => {
     const variable = resultNumber(5)
@@ -8,5 +9,5 @@ test('defined', () => {
 })
 
 test('undefined', () => {
-    expect(() => resolve({ type: 'variable', name: 'a' })).toThrow()
+    failResolve({ type: 'variable', name: 'a' }, 'variableUnknown', [], 'a')
 })

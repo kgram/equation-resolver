@@ -4,7 +4,7 @@ import { ResultNode, ResultNodeUnit, ResultNodeMatrix, ResultNodeNumber } from '
 import { UnitLookup } from './UnitLookup'
 import { FormatOptions } from './FormatOptions'
 
-import { resolve } from './resolve'
+import { resolveNode } from './resolve'
 import { divide } from './operators'
 import { isSameUnit, isEmptyUnit, getUnit, getUnitless, combineUnits } from './utils/units'
 
@@ -16,7 +16,7 @@ export const format = (
     unit: EquationNode | null = null,
     options: FormatOptions = {},
 ): EquationNode => {
-    const result = resolve(equation, options)
+    const result = resolveNode(equation, options)
 
     return {
         type: 'equals',
@@ -27,11 +27,11 @@ export const format = (
 
 function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, options: FormatOptions) {
     if (unit) {
-        const unitResult = resolve(unit, options)
+        const unitResult = resolveNode(unit, options)
         if (!isUnitTree(unit) || !isUnitResult(unitResult)) {
             throw new Error('Equation resolve: invalid unit')
         }
-        const value = divide(getUnitless(result), getUnitless(unitResult))
+        const value = divide(unit, getUnitless(result), getUnitless(unitResult))
         const diffUnits = combineUnits(getUnit(result), getUnit(unitResult), (a, b) => a - b)
         if (isEmptyUnit(diffUnits)) {
             return wrapUnit(resultToEquation(value, options), unit)
@@ -197,7 +197,7 @@ function guessUnit(result: ResultNodeUnit, { simplifiableUnits = defaultSimplifi
         return {
             type: 'unit',
             units: { [unit]: 1 },
-            value: divide(result.value, variable.value) as ResultNodeMatrix | ResultNodeNumber,
+            value: divide({} as EquationNode, result.value, variable.value) as ResultNodeMatrix | ResultNodeNumber,
         }
     } else {
         return result

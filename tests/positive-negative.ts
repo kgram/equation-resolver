@@ -1,11 +1,7 @@
-import { resolve } from '../src'
-
 import { equationNumber } from './helpers/equationNumber'
+import { failResolve } from './helpers/failResolve'
 
 test('any', () => {
-    expect(() => resolve({
-        type: 'positive-negative',
-        value: equationNumber(5),
-    })).toThrow()
+    failResolve({ type: 'positive-negative', value: equationNumber(5) }, 'plusminusUnhandled', [])
 })
 

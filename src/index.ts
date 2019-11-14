@@ -12,3 +12,6 @@ export type ResultNodeUnit = ResultNode.ResultNodeUnit
 
 import * as UnitLookup from './UnitLookup'
 export type UnitLookup = UnitLookup.UnitLookup
+
+import * as ResultResolveError from './ResultResolveError'
+export type ResultResolveError = ResultResolveError.ResultResolveError

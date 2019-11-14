@@ -4,6 +4,7 @@ import { resolve } from '../src'
 
 import { equationNumber } from './helpers/equationNumber'
 import { resultNumber } from './helpers/resultNumber'
+import { failResolve } from './helpers/failResolve'
 
 const scalar = equationNumber(7)
 const matrix: EquationNode = {
@@ -187,7 +188,7 @@ test('divide-inline', () => {
     })
 })
 test('power', () => {
-    expect(() => resolve({ type: 'power', a: scalar, b: matrix })).toThrow()
+    failResolve({ type: 'power', a: scalar, b: matrix }, 'powerUnitlessNumberExponent')
     expect(resolve({ type: 'power', a: matrix, b: scalar })).toEqual({
         type: 'matrix',
         n: 4,

@@ -4,7 +4,7 @@ import { mapMatrix } from './utils/mapMatrix'
 import { throwUnknownType } from './utils/throwUnknownType'
 
 // Requires extensive hacks to move around type system, since generic types
-// narrow from control-flow (ie. T remains ResultNode in switch)
+// don't narrow from control-flow (ie. T remains ResultNode in switch)
 export const negate = <T extends ResultNode>(value: T): T => {
     const castValue: ResultNode = value
     switch (castValue.type) {

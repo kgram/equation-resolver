@@ -3,6 +3,7 @@ import { defaultFunctions } from '../../src/defaultFunctions'
 
 import { equationNumber } from '../helpers/equationNumber'
 import { resultNumber } from '../helpers/resultNumber'
+import { failResolve } from '../helpers/failResolve'
 
 
 test('sin', () => {
@@ -134,9 +135,5 @@ test('ln', () => {
 })
 
 test('unknown', () => {
-    expect(() => resolve({
-        type: 'function',
-        name: 'unknown',
-        args: [equationNumber(5)],
-    }, { functions: defaultFunctions })).toThrow()
+    failResolve({ type: 'function', name: 'unknown', args: [equationNumber(5)] }, 'functionUnknown', [], 'unknown')
 })

@@ -4,8 +4,9 @@ import { resolve } from '../src'
 
 import { equationNumber } from './helpers/equationNumber'
 import { resultNumber } from './helpers/resultNumber'
+import { failResolve } from './helpers/failResolve'
 
-const matrixA: EquationNode = {
+const matrix4x3a: EquationNode = {
     type: 'matrix',
     n: 3,
     m: 4,
@@ -16,7 +17,7 @@ const matrixA: EquationNode = {
         [equationNumber(4), equationNumber(5), equationNumber(6)],
     ],
 }
-const matrixB: EquationNode = {
+const matrix4x3b: EquationNode = {
     type: 'matrix',
     n: 3,
     m: 4,
@@ -27,7 +28,7 @@ const matrixB: EquationNode = {
         [equationNumber(-1), equationNumber(0), equationNumber(1)],
     ],
 }
-const matrixC: EquationNode = {
+const matrix2x4: EquationNode = {
     type: 'matrix',
     n: 4,
     m: 2,
@@ -36,7 +37,7 @@ const matrixC: EquationNode = {
         [equationNumber(2), equationNumber(3), equationNumber(4), equationNumber(5)],
     ],
 }
-const vectorA: EquationNode = {
+const vector3x1a: EquationNode = {
     type: 'matrix',
     n: 1,
     m: 3,
@@ -46,7 +47,7 @@ const vectorA: EquationNode = {
         [equationNumber(3)],
     ],
 }
-const vectorB: EquationNode = {
+const vector3x1b: EquationNode = {
     type: 'matrix',
     n: 1,
     m: 3,
@@ -57,9 +58,8 @@ const vectorB: EquationNode = {
     ],
 }
 
-
 test('plus', () => {
-    expect(resolve({ type: 'plus', a: matrixA, b: matrixB })).toEqual({
+    expect(resolve({ type: 'plus', a: matrix4x3a, b: matrix4x3b })).toEqual({
         type: 'matrix',
         n: 3,
         m: 4,
@@ -70,7 +70,7 @@ test('plus', () => {
             [resultNumber(3), resultNumber(5), resultNumber(7)],
         ],
     })
-    expect(resolve({ type: 'plus', a: matrixB, b: matrixA })).toEqual({
+    expect(resolve({ type: 'plus', a: matrix4x3b, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
         m: 4,
@@ -81,13 +81,13 @@ test('plus', () => {
             [resultNumber(3), resultNumber(5), resultNumber(7)],
         ],
     })
-    expect(() => resolve({ type: 'plus', a: matrixA, b: matrixC })).toThrow()
-    expect(() => resolve({ type: 'plus', a: matrixA, b: vectorA })).toThrow()
-    expect(() => resolve({ type: 'plus', a: vectorA, b: matrixA })).toThrow()
+    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], '4x3', '2x4')
+    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], '4x3', '3x1')
+    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], '3x1', '4x3')
 })
 
 test('minus', () => {
-    expect(resolve({ type: 'minus', a: matrixA, b: matrixB })).toEqual({
+    expect(resolve({ type: 'minus', a: matrix4x3a, b: matrix4x3b })).toEqual({
         type: 'matrix',
         n: 3,
         m: 4,
@@ -98,7 +98,7 @@ test('minus', () => {
             [resultNumber(5), resultNumber(5), resultNumber(5)],
         ],
     })
-    expect(resolve({ type: 'minus', a: matrixB, b: matrixA })).toEqual({
+    expect(resolve({ type: 'minus', a: matrix4x3b, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
         m: 4,
@@ -109,14 +109,14 @@ test('minus', () => {
             [resultNumber(-5), resultNumber(-5), resultNumber(-5)],
         ],
     })
-    expect(() => resolve({ type: 'minus', a: matrixA, b: matrixC })).toThrow()
-    expect(() => resolve({ type: 'minus', a: matrixA, b: vectorA })).toThrow()
-    expect(() => resolve({ type: 'minus', a: vectorA, b: matrixA })).toThrow()
+    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], '4x3', '2x4')
+    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], '4x3', '3x1')
+    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], '3x1', '4x3')
 })
 test('multiply-dot', () => {
-    expect(() => resolve({ type: 'multiply-dot', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'multiply-dot', a: matrixB, b: matrixA })).toThrow()
-    expect(resolve({ type: 'multiply-dot', a: matrixC, b: matrixA })).toEqual({
+    failResolve({ type: 'multiply-dot', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-dot', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    expect(resolve({ type: 'multiply-dot', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
         m: 2,
@@ -125,7 +125,7 @@ test('multiply-dot', () => {
             [resultNumber(40), resultNumber(54), resultNumber(68)],
         ],
     })
-    expect(resolve({ type: 'multiply-dot', a: matrixA, b: vectorA })).toEqual({
+    expect(resolve({ type: 'multiply-dot', a: matrix4x3a, b: vector3x1a })).toEqual({
         type: 'matrix',
         n: 1,
         m: 4,
@@ -136,13 +136,13 @@ test('multiply-dot', () => {
             [resultNumber(32)],
         ],
     })
-    expect(() => resolve({ type: 'multiply-dot', a: vectorA, b: matrixA })).toThrow()
-    expect(resolve({ type: 'multiply-dot', a: vectorA, b: vectorB })).toEqual(resultNumber(37))
+    failResolve({ type: 'multiply-dot', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    expect(resolve({ type: 'multiply-dot', a: vector3x1a, b: vector3x1b })).toEqual(resultNumber(37))
 })
 test('multiply-cross', () => {
-    expect(() => resolve({ type: 'multiply-cross', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'multiply-cross', a: matrixB, b: matrixA })).toThrow()
-    expect(resolve({ type: 'multiply-cross', a: matrixC, b: matrixA })).toEqual({
+    failResolve({ type: 'multiply-cross', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-cross', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    expect(resolve({ type: 'multiply-cross', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
         m: 2,
@@ -151,7 +151,7 @@ test('multiply-cross', () => {
             [resultNumber(40), resultNumber(54), resultNumber(68)],
         ],
     })
-    expect(resolve({ type: 'multiply-cross', a: matrixA, b: vectorA })).toEqual({
+    expect(resolve({ type: 'multiply-cross', a: matrix4x3a, b: vector3x1a })).toEqual({
         type: 'matrix',
         n: 1,
         m: 4,
@@ -162,8 +162,8 @@ test('multiply-cross', () => {
             [resultNumber(32)],
         ],
     })
-    expect(() => resolve({ type: 'multiply-cross', a: vectorA, b: matrixA })).toThrow()
-    expect(resolve({ type: 'multiply-cross', a: vectorA, b: vectorB })).toEqual({
+    failResolve({ type: 'multiply-cross', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    expect(resolve({ type: 'multiply-cross', a: vector3x1a, b: vector3x1b })).toEqual({
         type: 'matrix',
         n: 1,
         m: 3,
@@ -175,9 +175,9 @@ test('multiply-cross', () => {
     })
 })
 test('multiply-implicit', () => {
-    expect(() => resolve({ type: 'multiply-implicit', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'multiply-implicit', a: matrixB, b: matrixA })).toThrow()
-    expect(resolve({ type: 'multiply-implicit', a: matrixC, b: matrixA })).toEqual({
+    failResolve({ type: 'multiply-implicit', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-implicit', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    expect(resolve({ type: 'multiply-implicit', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
         m: 2,
@@ -186,7 +186,7 @@ test('multiply-implicit', () => {
             [resultNumber(40), resultNumber(54), resultNumber(68)],
         ],
     })
-    expect(resolve({ type: 'multiply-implicit', a: matrixA, b: vectorA })).toEqual({
+    expect(resolve({ type: 'multiply-implicit', a: matrix4x3a, b: vector3x1a })).toEqual({
         type: 'matrix',
         n: 1,
         m: 4,
@@ -197,31 +197,31 @@ test('multiply-implicit', () => {
             [resultNumber(32)],
         ],
     })
-    expect(() => resolve({ type: 'multiply-implicit', a: vectorA, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'multiply-implicit', a: vectorA, b: vectorB })).toThrow()
+    failResolve({ type: 'multiply-implicit', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'multiply-implicit', a: vector3x1a, b: vector3x1b }, 'multiplyImplicitNoVectors', [])
 })
 test('divide-fraction', () => {
-    expect(() => resolve({ type: 'divide-fraction', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'divide-fraction', a: matrixB, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-fraction', a: matrixC, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-fraction', a: matrixA, b: vectorA })).toThrow()
-    expect(() => resolve({ type: 'divide-fraction', a: vectorA, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-fraction', a: vectorA, b: vectorB })).toThrow()
+    failResolve({ type: 'divide-fraction', a: matrix4x3a, b: matrix4x3b }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-fraction', a: matrix4x3b, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-fraction', a: matrix2x4, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-fraction', a: matrix4x3a, b: vector3x1a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-fraction', a: vector3x1a, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-fraction', a: vector3x1a, b: vector3x1b }, 'divideMatrixMatrix', [])
 })
 test('divide-inline', () => {
-    expect(() => resolve({ type: 'divide-inline', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'divide-inline', a: matrixB, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-inline', a: matrixC, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-inline', a: matrixA, b: vectorA })).toThrow()
-    expect(() => resolve({ type: 'divide-inline', a: vectorA, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'divide-inline', a: vectorA, b: vectorB })).toThrow()
+    failResolve({ type: 'divide-inline', a: matrix4x3a, b: matrix4x3b }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-inline', a: matrix4x3b, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-inline', a: matrix2x4, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-inline', a: matrix4x3a, b: vector3x1a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-inline', a: vector3x1a, b: matrix4x3a }, 'divideMatrixMatrix', [])
+    failResolve({ type: 'divide-inline', a: vector3x1a, b: vector3x1b }, 'divideMatrixMatrix', [])
 })
 test('power', () => {
-    expect(() => resolve({ type: 'power', a: matrixA, b: matrixB })).toThrow()
-    expect(() => resolve({ type: 'power', a: matrixB, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'power', a: matrixC, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'power', a: matrixA, b: vectorA })).toThrow()
-    expect(() => resolve({ type: 'power', a: vectorA, b: matrixA })).toThrow()
-    expect(() => resolve({ type: 'power', a: vectorA, b: vectorB })).toThrow()
+    failResolve({ type: 'power', a: matrix4x3a, b: matrix4x3b }, 'powerUnitlessNumberExponent', [])
+    failResolve({ type: 'power', a: matrix4x3b, b: matrix4x3a }, 'powerUnitlessNumberExponent', [])
+    failResolve({ type: 'power', a: matrix2x4, b: matrix4x3a }, 'powerUnitlessNumberExponent', [])
+    failResolve({ type: 'power', a: matrix4x3a, b: vector3x1a }, 'powerUnitlessNumberExponent', [])
+    failResolve({ type: 'power', a: vector3x1a, b: matrix4x3a }, 'powerUnitlessNumberExponent', [])
+    failResolve({ type: 'power', a: vector3x1a, b: vector3x1b }, 'powerUnitlessNumberExponent', [])
 })
 
