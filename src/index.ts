@@ -15,3 +15,9 @@ export type UnitLookup = UnitLookup.UnitLookup
 
 import * as ResultResolveError from './ResultResolveError'
 export type ResultResolveError = ResultResolveError.ResultResolveError
+
+import * as FunctionLookup from './FunctionLookup'
+export type FunctionLookup = FunctionLookup.FunctionLookup
+
+import * as VariableLookup from './VariableLookup'
+export type VariableLookup = VariableLookup.VariableLookup
