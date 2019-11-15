@@ -14,11 +14,15 @@ const defaultSimplifiableUnits = ['N', 'J', 'W', 'Pa', 'Hz', 'lx', 'C', 'V', 'F'
 
 export const format = (
     equation: EquationNode | EquationParserError,
-    unit: EquationNode | null = null,
+    unit: EquationNode | EquationParserError | null = null,
     options: FormatOptions = {},
 ): EquationNode | EquationParserError | EquationResolveError => {
     if (equation.type === 'parser-error') {
         return equation
+    }
+
+    if (unit && unit.type === 'parser-error') {
+        return unit
     }
 
     if (unit && !isUnitTree(unit)) {
