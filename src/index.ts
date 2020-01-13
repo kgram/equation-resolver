@@ -24,3 +24,6 @@ export type FunctionLookup = FunctionLookup.FunctionLookup
 
 import * as VariableLookup from './VariableLookup'
 export type VariableLookup = VariableLookup.VariableLookup
+
+import * as FormatOptions from './FormatOptions'
+export type FormatOptions = FormatOptions.FormatOptions
