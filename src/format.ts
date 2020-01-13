@@ -39,21 +39,15 @@ export const format = (
 
     if (result.type === 'resolve-error') {
         return {
-            type: 'resolve-error',
-            errorType: result.errorType,
+            ...result,
             node: wrapError(equation, unit),
-            errorNode: result.node,
-            values: result.values,
         }
     }
 
     if (unitResult && unitResult.type === 'resolve-error') {
         return {
-            type: 'resolve-error',
-            errorType: unitResult.errorType,
+            ...unitResult,
             node: wrapError(equation, unit),
-            errorNode: unitResult.node,
-            values: unitResult.values,
         }
     }
 
@@ -63,7 +57,6 @@ export const format = (
             errorType: 'invalidUnit',
             node: wrapError(equation, unit),
             errorNode: unit,
-            values: [],
         }
     }
 
