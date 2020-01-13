@@ -20,7 +20,7 @@ export const createNumberFunction = (
 
         const nonNumber = resolvedArgs.findIndex((arg) => arg.type !== 'number')
         if (nonNumber !== -1) {
-            throw new ResolverError('functionNumberOnly', node.args[nonNumber], {})
+            throw new ResolverError('functionNumberOnly', node.args[nonNumber], { name: node.name })
         }
 
         const numberArgs = (resolvedArgs as ResultNodeNumber[]).map((arg) => arg.value)
@@ -28,7 +28,7 @@ export const createNumberFunction = (
         if (validate) {
             const result = validate(node.name, ...numberArgs)
             if (result) {
-                throw new ResolverError(result[1], node.args[result[0]], {})
+                throw new ResolverError(result[1], node.args[result[0]], { name: node.name })
             }
         }
 

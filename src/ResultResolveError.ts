@@ -2,12 +2,12 @@ import { EquationNode } from 'equation-parser'
 
 export type ResultResolveError = { type: 'resolve-error', errorNode: EquationNode | null } & (
     | { errorType: 'functionUnknown', name: string }
-    | { errorType: 'functionArgLength', minArgs: number, maxArgs: number }
-    | { errorType: 'functionNumberOnly' }
+    | { errorType: 'functionArgLength', name: string, minArgs: number, maxArgs: number }
+    | { errorType: 'functionNumberOnly', name: string }
 
-    | { errorType: 'functionSqrt1Negative' }
-    | { errorType: 'functionRoot1PositiveInteger' }
-    | { errorType: 'functionRoot2Negative' }
+    | { errorType: 'functionSqrt1Negative', name: string }
+    | { errorType: 'functionRoot1PositiveInteger', name: string }
+    | { errorType: 'functionRoot2Negative', name: string }
     | { errorType: 'functionSum1Variable', name: string, variableType: string }
     | { errorType: 'functionSum2Integer', name: string }
     | { errorType: 'functionSum3Integer', name: string }
