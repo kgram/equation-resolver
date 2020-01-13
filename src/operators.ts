@@ -14,7 +14,7 @@ export function plus(node: EquationNode, aTree: ResultNode, bTree: ResultNode): 
     return handleCases(node, aTree, bTree,
         (a, b) => {
             if (!isSameUnit(a, b)) {
-                throw new ResolverError('plusDifferentUnits', node)
+                throw new ResolverError('plusDifferentUnits', node, {})
             }
             return a
         },
@@ -27,7 +27,7 @@ export function plus(node: EquationNode, aTree: ResultNode, bTree: ResultNode): 
         // matrix, matrix
         (a, b) => {
             if (a.n !== b.n || a.m !== b.m) {
-                throw new ResolverError('plusMatrixMismatch', node, `${a.m}x${a.n}`, `${b.m}x${b.n}`)
+                throw new ResolverError('plusMatrixMismatch', node, { aDimensions: `${a.m}x${a.n}`, bDimensions: `${b.m}x${b.n}` })
             }
             return {
                 type: 'matrix',
@@ -49,7 +49,7 @@ export function minus(node: EquationNode, a: ResultNode, b: ResultNode): ResultN
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function plusminus(node: EquationNode, a: ResultNode, b: ResultNode): ResultNode {
-    throw new ResolverError('plusminusUnhandled', node)
+    throw new ResolverError('plusminusUnhandled', node, {})
 }
 
 function multiply(node: EquationNode,aTree: ResultNode, bTree: ResultNode, multiplyVectors: (node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMatrix) => ResultNodeNumber | ResultNodeMatrix): ResultNode {
@@ -74,7 +74,7 @@ function multiply(node: EquationNode,aTree: ResultNode, bTree: ResultNode, multi
 
 function scalarProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMatrix): ResultNodeNumber {
     if (a.m !== b.m) {
-        throw new ResolverError('scalarProductUnbalanced', node, a.m, b.m)
+        throw new ResolverError('scalarProductUnbalanced', node, { aLength: a.m, bLength: b.m })
     }
     const sum = a.values.reduce(
         (current, row, rowIdx) => current + row[0].value * b.values[rowIdx][0].value,
@@ -86,7 +86,7 @@ function scalarProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMat
 
 function vectorProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMatrix): ResultNodeMatrix {
     if (a.m !== 3 || b.m !== 3) {
-        throw new ResolverError('vectorProduct3VectorOnly', node)
+        throw new ResolverError('vectorProduct3VectorOnly', node, {})
     }
 
     return {
@@ -103,7 +103,7 @@ function vectorProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMat
 
 function matrixProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMatrix): ResultNodeMatrix {
     if (a.n !== b.m) {
-        throw new ResolverError('matrixProductMatrixMismatch', node, `${a.m}x${a.n}`, `${b.m}x${b.n}`)
+        throw new ResolverError('matrixProductMatrixMismatch', node, { aDimensions: `${a.m}x${a.n}`, bDimensions: `${b.m}x${b.n}` })
     }
 
     return {
@@ -123,7 +123,7 @@ function matrixProduct(node: EquationNode, a: ResultNodeMatrix, b: ResultNodeMat
 
 export function multiplyImplicit(node: EquationNode, a: ResultNode, b: ResultNode): ResultNode {
     if (a.type === 'matrix' && b.type === 'matrix' && a.n === 1 && b.n === 1) {
-        throw new ResolverError('multiplyImplicitNoVectors', node)
+        throw new ResolverError('multiplyImplicitNoVectors', node, {})
     }
     return multiply(node, a, b, scalarProduct)
 }
@@ -138,13 +138,13 @@ export function multiplyCross(node: EquationNode, a: ResultNode, b: ResultNode):
 
 export function divide(node: EquationNode,aTree: ResultNode, bTree: ResultNode): ResultNode {
     if (aTree.type === 'matrix' && bTree.type === 'matrix') {
-        throw new ResolverError('divideMatrixMatrix', node)
+        throw new ResolverError('divideMatrixMatrix', node, {})
     }
     if (bTree.type === 'number' && bTree.value === 0) {
-        throw new ResolverError('divideNotZero', node)
+        throw new ResolverError('divideNotZero', node, {})
     }
     if (bTree.type === 'matrix' && bTree.values.some((row) => row.some((cell) => cell.value === 0))) {
-        throw new ResolverError('divideNotZero', node)
+        throw new ResolverError('divideNotZero', node, {})
     }
     return handleCases(node, aTree, bTree,
         (a, b) => combineUnits(a, b, (factor1, factor2) => factor1 - factor2),
@@ -161,7 +161,7 @@ export function divide(node: EquationNode,aTree: ResultNode, bTree: ResultNode):
 
 export function power(node: EquationNode, aTree: ResultNode, bTree: ResultNode): ResultNode {
     if (bTree.type !== 'number') {
-        throw new ResolverError('powerUnitlessNumberExponent', node)
+        throw new ResolverError('powerUnitlessNumberExponent', node, {})
     }
     return handleCases(node, aTree, bTree,
         (a) => mapUnit(a, (factor) => factor * bTree.value),
@@ -242,5 +242,6 @@ function handleCases(
             break
         }
     }
-    throw new Error(`Equation resolve: cannot handle operator`)
+
+    throw new ResolverError('operatorInvalidArguments', node, { operator: node.type, a: a.type, b: b.type })
 }

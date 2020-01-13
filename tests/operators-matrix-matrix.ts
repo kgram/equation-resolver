@@ -81,9 +81,9 @@ test('plus', () => {
             [resultNumber(3), resultNumber(5), resultNumber(7)],
         ],
     })
-    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], '4x3', '2x4')
-    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], '4x3', '3x1')
-    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '2x4' })
+    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '3x1' })
+    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], { aDimensions: '3x1', bDimensions: '4x3' })
 })
 
 test('minus', () => {
@@ -109,13 +109,13 @@ test('minus', () => {
             [resultNumber(-5), resultNumber(-5), resultNumber(-5)],
         ],
     })
-    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], '4x3', '2x4')
-    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], '4x3', '3x1')
-    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'plus', a: matrix4x3a, b: matrix2x4 }, 'plusMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '2x4' })
+    failResolve({ type: 'plus', a: matrix4x3a, b: vector3x1a }, 'plusMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '3x1' })
+    failResolve({ type: 'plus', a: vector3x1a, b: matrix4x3a }, 'plusMatrixMismatch', [], { aDimensions: '3x1', bDimensions: '4x3' })
 })
 test('multiply-dot', () => {
-    failResolve({ type: 'multiply-dot', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
-    failResolve({ type: 'multiply-dot', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-dot', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
+    failResolve({ type: 'multiply-dot', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
     expect(resolve({ type: 'multiply-dot', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
@@ -136,12 +136,12 @@ test('multiply-dot', () => {
             [resultNumber(32)],
         ],
     })
-    failResolve({ type: 'multiply-dot', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'multiply-dot', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '3x1', bDimensions: '4x3' })
     expect(resolve({ type: 'multiply-dot', a: vector3x1a, b: vector3x1b })).toEqual(resultNumber(37))
 })
 test('multiply-cross', () => {
-    failResolve({ type: 'multiply-cross', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
-    failResolve({ type: 'multiply-cross', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-cross', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
+    failResolve({ type: 'multiply-cross', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
     expect(resolve({ type: 'multiply-cross', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
@@ -162,7 +162,7 @@ test('multiply-cross', () => {
             [resultNumber(32)],
         ],
     })
-    failResolve({ type: 'multiply-cross', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'multiply-cross', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '3x1', bDimensions: '4x3' })
     expect(resolve({ type: 'multiply-cross', a: vector3x1a, b: vector3x1b })).toEqual({
         type: 'matrix',
         n: 1,
@@ -175,8 +175,8 @@ test('multiply-cross', () => {
     })
 })
 test('multiply-implicit', () => {
-    failResolve({ type: 'multiply-implicit', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
-    failResolve({ type: 'multiply-implicit', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '4x3', '4x3')
+    failResolve({ type: 'multiply-implicit', a: matrix4x3a, b: matrix4x3b }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
+    failResolve({ type: 'multiply-implicit', a: matrix4x3b, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '4x3', bDimensions: '4x3' })
     expect(resolve({ type: 'multiply-implicit', a: matrix2x4, b: matrix4x3a })).toEqual({
         type: 'matrix',
         n: 3,
@@ -197,7 +197,7 @@ test('multiply-implicit', () => {
             [resultNumber(32)],
         ],
     })
-    failResolve({ type: 'multiply-implicit', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], '3x1', '4x3')
+    failResolve({ type: 'multiply-implicit', a: vector3x1a, b: matrix4x3a }, 'matrixProductMatrixMismatch', [], { aDimensions: '3x1', bDimensions: '4x3' })
     failResolve({ type: 'multiply-implicit', a: vector3x1a, b: vector3x1b }, 'multiplyImplicitNoVectors', [])
 })
 test('divide-fraction', () => {

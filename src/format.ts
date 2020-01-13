@@ -31,7 +31,6 @@ export const format = (
             errorType: 'invalidUnit',
             node: wrapError(equation, unit),
             errorNode: unit,
-            values: [],
         }
     }
 

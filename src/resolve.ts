@@ -16,20 +16,14 @@ export const resolve = (node: EquationNode | EquationParserError, options: Resol
         return {
             type: 'resolve-error',
             errorType: 'invalidEquation',
-            node: null,
-            values: [],
+            errorNode: null,
         }
     }
     try {
         return resolveNode(node, options)
     } catch (error) {
         if (error instanceof ResolverError) {
-            return {
-                type: 'resolve-error',
-                errorType: error.type,
-                node: error.node,
-                values: error.values,
-            }
+            return error.getResolveError()
         } else {
             throw error
         }
@@ -53,7 +47,7 @@ export const resolveNode = (
         case 'negative':
             return negate(resolveNode(node.value, options))
         case 'positive-negative':
-            throw new ResolverError('plusminusUnhandled', node)
+            throw new ResolverError('plusminusUnhandled', node, {})
         case 'block':
             return resolveNode(node.child, options)
         case 'plus':
@@ -69,7 +63,7 @@ export const resolveNode = (
                 resolveNode(node.b, options),
             )
         case 'plus-minus':
-            throw new ResolverError('plusminusUnhandled', node)
+            throw new ResolverError('plusminusUnhandled', node, {})
         case 'multiply-implicit':
             return multiplyImplicit(
                 node,
@@ -109,7 +103,7 @@ export const resolveNode = (
         case 'greater-than':
         case 'greater-than-equals':
         case 'approximates':
-            throw new ResolverError('noComparison', node)
+            throw new ResolverError('noComparison', node, {})
         case 'matrix': {
             // Keep track of resolved unit
             let unit: UnitLookup | null = null
@@ -118,7 +112,7 @@ export const resolveNode = (
                 // Compare units
                 if (unit) {
                     if (!isSameUnit(unit, getUnit(value))) {
-                        throw new ResolverError('matrixDifferentUnits', node)
+                        throw new ResolverError('matrixDifferentUnits', node, {})
                     }
                 } else {
                     unit = getUnit(value)
@@ -126,7 +120,7 @@ export const resolveNode = (
                 // Ensure all children are unitless numbers
                 const unitlessValue = getUnitless(value)
                 if (unitlessValue.type !== 'number') {
-                    throw new ResolverError('matrixNoNesting', node)
+                    throw new ResolverError('matrixNoNesting', node, {})
                 }
 
                 return unitlessValue
@@ -157,7 +151,7 @@ export const resolveNode = (
         case 'operand-placeholder':
         case 'operator-placeholder':
         case 'operator-unary-placeholder':
-            throw new ResolverError('placeholder', node)
+            throw new ResolverError('placeholder', node, {})
         default:
             return throwUnknownType(node, (type) => `Equation resolve: cannot resolve type "${type}"`)
     }
@@ -165,14 +159,14 @@ export const resolveNode = (
 
 function resolveVariable(node: EquationNodeVariable, options: ResolveOptions): ResultNode {
     if (!options.variables || !options.variables[node.name]) {
-        throw new ResolverError('variableUnknown', node, node.name)
+        throw new ResolverError('variableUnknown', node, { name: node.name })
     }
     return options.variables[node.name]
 }
 
 function resolveFunction(node: EquationNodeFunction, options: ResolveOptions) {
     if (!options.functions || !options.functions[node.name]) {
-        throw new ResolverError('functionUnknown', node, node.name)
+        throw new ResolverError('functionUnknown', node, { name: node.name })
     }
 
     return options.functions[node.name](node, options)

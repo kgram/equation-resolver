@@ -9,5 +9,5 @@ test('defined', () => {
 })
 
 test('undefined', () => {
-    failResolve({ type: 'variable', name: 'a' }, 'variableUnknown', [], 'a')
+    failResolve({ type: 'variable', name: 'a' }, 'variableUnknown', [], { name: 'a' })
 })

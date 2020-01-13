@@ -135,5 +135,5 @@ test('ln', () => {
 })
 
 test('unknown', () => {
-    failResolve({ type: 'function', name: 'unknown', args: [equationNumber(5)] }, 'functionUnknown', [], 'unknown')
+    failResolve({ type: 'function', name: 'unknown', args: [equationNumber(5)] }, 'functionUnknown', [], { name: 'unknown' })
 })

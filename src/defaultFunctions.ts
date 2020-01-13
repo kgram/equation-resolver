@@ -61,16 +61,16 @@ export const defaultFunctions: FunctionLookup = {
         const [variable, startTree, endTree, expression] = node.args
 
         if (variable.type !== 'variable') {
-            throw new ResolverError('functionSum1Variable', node, node.name, variable.type)
+            throw new ResolverError('functionSum1Variable', variable, { name: node.name, variableType: variable.type })
         }
 
         let start = resolveNode(startTree, options)
         let end = resolveNode(endTree, options)
         if (!isInteger(start)) {
-            throw new ResolverError('functionSum2Integer', node, node.name)
+            throw new ResolverError('functionSum2Integer', startTree, { name: node.name })
         }
         if (!isInteger(end)) {
-            throw new ResolverError('functionSum3Integer', node, node.name)
+            throw new ResolverError('functionSum3Integer', endTree, { name: node.name })
         }
         if (start > end) {
             [start, end] = [end, start]
