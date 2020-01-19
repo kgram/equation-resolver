@@ -5,9 +5,9 @@ export type ResultResolveError = { type: 'resolve-error', errorNode: EquationNod
     | { errorType: 'functionArgLength', name: string, minArgs: number, maxArgs: number }
     | { errorType: 'functionNumberOnly', name: string }
 
-    | { errorType: 'functionSqrt1Negative', name: string }
+    | { errorType: 'functionSqrt1Positive', name: string }
     | { errorType: 'functionRoot1PositiveInteger', name: string }
-    | { errorType: 'functionRoot2Negative', name: string }
+    | { errorType: 'functionRoot2Positive', name: string }
     | { errorType: 'functionSum1Variable', name: string, variableType: string }
     | { errorType: 'functionSum2Integer', name: string }
     | { errorType: 'functionSum3Integer', name: string }

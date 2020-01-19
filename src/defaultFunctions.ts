@@ -35,7 +35,7 @@ export const defaultFunctions: FunctionLookup = {
     pow: createNumberFunction(Math.pow, 2),
     sqrt: createNumberFunction(Math.sqrt, 1, 1, (name, x) => {
         if (x < 0) {
-            return [0, 'functionSqrt1Negative']
+            return [0, 'functionSqrt1Positive']
         }
     }),
 
@@ -47,7 +47,7 @@ export const defaultFunctions: FunctionLookup = {
                 return [0, 'functionRoot1PositiveInteger']
             }
             if (f % 2 === 0 && x < 0) {
-                return [1, 'functionRoot2Negative']
+                return [1, 'functionRoot2Positive']
             }
         },
     ),
