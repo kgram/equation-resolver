@@ -11,6 +11,9 @@ import { negate } from './negate'
 import { ResolverError } from './utils/ResolverError'
 import { throwUnknownType } from './utils/throwUnknownType'
 
+/**
+ * Resolve an `EquationNode` into a `ResultNode`
+ */
 export const resolve = (node: EquationNode | EquationParserError, options: ResolveOptions = {}): ResultNode | ResultResolveError => {
     if (node.type === 'parser-error') {
         return {

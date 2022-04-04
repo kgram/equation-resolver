@@ -14,6 +14,10 @@ import { guessUnit } from './guessUnit'
 import { wrapUnit } from './wrapUnit'
 import { unitToEquation} from './unitToEquation'
 
+/**
+ * Resolve an `EquationNode` (or `EquationParserError`), wraps it in an
+ * `equals`-node and adds the result as an `EquationNode`.
+ * */
 export const format = (
     equation: EquationNode | EquationParserError,
     unit: EquationNode | EquationParserError | null = null,
@@ -31,6 +35,13 @@ export const format = (
     )
 }
 
+/**
+ * Wraps a resolved `EquationNode` in an `equals`-node with a formatted
+ * `ResultNode` as the right-hand side.
+ *
+ * This is used internally by `format`, it's mostly useful if the result needs
+ * to be exposed with the equation. It assumes `equation` matches `result`, and `unit` matches `unitResult`
+ */
 export const formatPreresolved = (
     equation: EquationNode | EquationParserError,
     unit: EquationNode | EquationParserError | null = null,

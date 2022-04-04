@@ -4,6 +4,7 @@ import { VariableLookup } from './VariableLookup'
 
 import { valueWrap } from './valueWrap'
 
+/** Definition of most common (and uncommon) units and constants */
 export const defaultVariables: VariableLookup = {
     // ========================================================================
     // Mathematical constants

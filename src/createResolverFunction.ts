@@ -8,6 +8,22 @@ import { ResolveOptions } from './ResolveOptions'
 import { checkArgs } from './utils/checkArgs'
 import { resolveNode } from './resolve'
 
+/**
+ * Helper-function for creating an equation-function from an equation and a list
+ * of variables.
+ *
+ * Creates a clone of variables/functions, so future modification isn't
+ * included.
+ *
+ * @example
+ * ```ts
+ * const functions = {
+ *  f: createResolverFunction(['x'], parse('2x+5'))
+ * }
+ * resolve('f(3)', { functions })
+ * // -> { type: 'number', value: 11 }
+ * ```
+ */
 export const createResolverFunction = (
     argNames: string[],
     expression: EquationNode,

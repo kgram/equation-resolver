@@ -12,6 +12,7 @@ import { resolveNode } from './resolve'
 import { createNumberFunction } from './utils/createNumberFunction'
 import { ResolverError } from './utils/ResolverError'
 
+/** Implementation of common functions with common abbreviated english names */
 export const defaultFunctions: FunctionLookup = {
     sin: createNumberFunction(Math.sin),
     cos: createNumberFunction(Math.cos),
