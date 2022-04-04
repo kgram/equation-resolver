@@ -1,3 +1,4 @@
+import { EquationNode } from 'equation-parser'
 import { ResultNode } from '../ResultNode'
 import { UnitLookup } from '../UnitLookup'
 
@@ -59,4 +60,32 @@ export function mapUnit(x: UnitLookup, mapper: (value: number, key: string) => n
     }
 
     return result
+}
+
+export function isUnitEquation(unitTree: EquationNode): boolean {
+    switch (unitTree.type) {
+        case 'multiply-implicit':
+        case 'multiply-dot':
+        case 'multiply-cross':
+        case 'divide-fraction':
+        case 'divide-inline':
+            return isUnitEquation(unitTree.a) && isUnitEquation(unitTree.b)
+        case 'power':
+            return unitTree.a.type === 'variable' && unitTree.b.type === 'number'
+        case 'variable':
+            return true
+        default:
+            return false
+    }
+}
+
+export function isUnitResult(unitResult: ResultNode): boolean {
+    switch (unitResult.type) {
+        case 'unit':
+            return isUnitResult(unitResult.value)
+        case 'number':
+            return true
+        default:
+            return false
+    }
 }
