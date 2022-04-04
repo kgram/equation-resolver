@@ -22,7 +22,7 @@ export const format = (
     const result = resolve(equation, options)
     const unitResult = unit ? resolve(unit, options) : null
 
-    return formatInternal(
+    return formatPreresolved(
         equation,
         unit,
         result,
@@ -31,7 +31,7 @@ export const format = (
     )
 }
 
-const formatInternal = (
+export const formatPreresolved = (
     equation: EquationNode | EquationParserError,
     unit: EquationNode | EquationParserError | null = null,
     result: ResultNode | ResultResolveError,
