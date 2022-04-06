@@ -33,4 +33,5 @@ export type {
 
 export type {
     FormatOptions,
+    FormatDecimalsOption,
 } from './FormatOptions'

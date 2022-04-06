@@ -9,7 +9,7 @@ import { divide } from '../operators'
 import { isEmptyUnit, getUnit, getUnitless, combineUnits, isUnitEquation, isUnitResult } from '../utils/units'
 import { ResultResolveError } from '../ResultResolveError'
 
-import { simplifyNumber } from './simplifyNumber'
+import { formatNumber } from './formatNumber'
 import { guessUnit } from './guessUnit'
 import { wrapUnit } from './wrapUnit'
 import { unitToEquation} from './unitToEquation'
@@ -133,10 +133,10 @@ function resultToEquation(result: ResultNode, options: FormatOptions): EquationN
             if (result.value < 0) {
                 return {
                     type: 'negative',
-                    value: simplifyNumber(-result.value),
+                    value: formatNumber(-result.value, options.decimals),
                 }
             } else {
-                return simplifyNumber(result.value)
+                return formatNumber(result.value, options.decimals)
             }
         case 'matrix':
             return {
