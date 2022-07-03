@@ -1,9 +1,6 @@
-
-// This has to be a js-file with an accompanying .d.ts file to allow creating
-// global types
 import { isEqualWith, isNumber } from 'lodash'
 import { matcherHint,printExpected, printReceived } from 'jest-matcher-utils'
-import diff from 'jest-diff'
+import { diff } from 'jest-diff'
 
 expect.extend({
     toEqualCloseTo(actual, expected) {
