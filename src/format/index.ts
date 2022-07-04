@@ -13,6 +13,7 @@ import { formatNumber } from './formatNumber'
 import { guessUnit } from './guessUnit'
 import { wrapUnit } from './wrapUnit'
 import { unitToEquation} from './unitToEquation'
+import { wrapError } from './wrapError'
 
 /**
  * Resolve an `EquationNode` (or `EquationParserError`), wraps it in an
@@ -95,18 +96,6 @@ export const formatPreresolved = (
         b: resultToEquationWithUnit(result, unit, unitResult, options),
     }
 }
-
-const wrapError = (equation: EquationNode, unit: EquationNode | null): EquationNode => ({
-    type: 'equals',
-    a: equation,
-    b: unit
-        ? {
-            type: 'multiply-implicit',
-            a: { type: 'operand-placeholder' },
-            b: unit,
-        }
-        : { type: 'operand-placeholder' },
-})
 
 function resultToEquationWithUnit(result: ResultNode, unit: EquationNode | null, unitResult: ResultNode | null, options: FormatOptions) {
     if (unit && unitResult) {
