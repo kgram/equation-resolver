@@ -15,6 +15,8 @@ import { wrapUnit } from './wrapUnit'
 import { unitToEquation} from './unitToEquation'
 import { wrapError } from './wrapError'
 
+export { wrapError }
+
 /**
  * Resolve an `EquationNode` (or `EquationParserError`), wraps it in an
  * `equals`-node and adds the result as an `EquationNode`.

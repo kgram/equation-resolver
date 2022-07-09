@@ -1,6 +1,6 @@
 export { createResolverFunction } from './createResolverFunction'
 export { resolve } from './resolve'
-export { format, formatPreresolved } from './format'
+export { format, formatPreresolved, wrapError } from './format'
 export { defaultFunctions } from './defaultFunctions'
 export { defaultVariables } from './defaultVariables'
 
