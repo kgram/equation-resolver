@@ -74,6 +74,8 @@ export function isUnitEquation(unitTree: EquationNode): boolean {
             return unitTree.a.type === 'variable' && unitTree.b.type === 'number'
         case 'variable':
             return true
+        case 'block':
+            return isUnitEquation(unitTree.child)
         default:
             return false
     }
