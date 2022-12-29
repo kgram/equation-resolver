@@ -11,7 +11,7 @@ export class ResolverError<T extends ResultResolveError['errorType']> extends Er
     errorNode: ResultResolveError['errorNode']
     values: Values<T>
     constructor(type: T, errorNode: ResultResolveError['errorNode'], values: Values<T>) {
-        super(`Internal ${type} parse error`)
+        super(`Internal ${type} resolve error`)
         this.type = type
         this.errorNode = errorNode
         this.values = values
