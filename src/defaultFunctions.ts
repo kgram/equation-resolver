@@ -3,6 +3,7 @@ import { EquationNodeFunction } from 'equation-parser'
 import { FunctionLookup } from './FunctionLookup'
 import { VariableLookup } from './VariableLookup'
 import { ResolveOptions } from './ResolveOptions'
+import { UnitLookup } from './UnitLookup'
 
 import { checkArgs } from './utils/checkArgs'
 import { isInteger } from './utils/isInteger'
@@ -11,6 +12,7 @@ import { plus } from './operators'
 import { resolveNode } from './resolve'
 import { createNumberFunction } from './utils/createNumberFunction'
 import { ResolverError } from './utils/ResolverError'
+import { mapUnit } from './utils/units'
 
 /** Implementation of common functions with common abbreviated english names */
 export const defaultFunctions: FunctionLookup = {
@@ -34,24 +36,78 @@ export const defaultFunctions: FunctionLookup = {
     min: createNumberFunction(Math.min, 1, Infinity),
 
     pow: createNumberFunction(Math.pow, 2),
-    sqrt: createNumberFunction(Math.sqrt, 1, 1, (name, x) => {
-        if (x < 0) {
-            return [0, 'functionSqrt1Positive']
-        }
-    }),
+    sqrt: (node, options) => {
+        checkArgs(node, 1, 1)
 
-    root: createNumberFunction(
-        (f, x) => Math.sign(x) * Math.pow(Math.abs(x), 1 / f),
-        2, 2,
-        (name, f, x) => {
-            if (Math.round(f) !== f || f <= 0) {
-                return [0, 'functionRoot1PositiveInteger']
-            }
-            if (f % 2 === 0 && x < 0) {
-                return [1, 'functionRoot2Positive']
-            }
-        },
-    ),
+        const [valueResult] = node.args.map((arg) => resolveNode(arg, options))
+
+        let value: number | undefined
+        let units: UnitLookup | undefined
+        switch (valueResult.type) {
+            case 'number':
+                value = valueResult.value
+                break
+            case 'unit':
+                if (valueResult.value.type === 'number') {
+                    value = valueResult.value.value
+                    units = valueResult.units
+                }
+                break
+        }
+
+        if (!value) {
+            throw new ResolverError('functionNumberOnly', node.args[0], { name: node.name })
+        }
+
+        if (value < 0) {
+            throw new ResolverError('functionSqrt1Positive', node.args[0], { name: node.name })
+        }
+
+        const result = valueWrap(Math.sqrt(value))
+
+        return units
+            ? { type: 'unit', units: mapUnit(units, (value) => value / 2), value: result }
+            : result
+    },
+
+    root: (node: EquationNodeFunction, options: ResolveOptions) => {
+        checkArgs(node, 2, 2)
+
+        const [factorResult, valueResult] = node.args.map((arg) => resolveNode(arg, options))
+
+        if (!isInteger(factorResult) || factorResult.value <= 0) {
+            throw new ResolverError('functionRoot1PositiveInteger', node.args[0], { name: node.name })
+        }
+
+        const factor = factorResult.value
+        let value: number | undefined
+        let units: UnitLookup | undefined
+        switch (valueResult.type) {
+            case 'number':
+                value = valueResult.value
+                break
+            case 'unit':
+                if (valueResult.value.type === 'number') {
+                    value = valueResult.value.value
+                    units = valueResult.units
+                }
+                break
+        }
+
+        if (!value) {
+            throw new ResolverError('functionNumberOnly', node.args[1], { name: node.name })
+        }
+
+        if (factor % 2 === 0 && value < 0) {
+            throw new ResolverError('functionRoot2Positive', node.args[1], { name: node.name })
+        }
+
+        const result = valueWrap(Math.sign(value) * Math.pow(Math.abs(value), 1 / factor))
+
+        return units
+            ? { type: 'unit', units: mapUnit(units, (value) => value / factor), value: result }
+            : result
+    },
 
     ln: createNumberFunction(Math.log),
     log: createNumberFunction((x, base = 10) => Math.log(x) / Math.log(base), 1, 2),
