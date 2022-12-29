@@ -1,6 +1,7 @@
 import { EquationNode } from 'equation-parser'
 
 import { UnitLookup } from '../UnitLookup'
+import { formatNumber } from './formatNumber'
 
 export function unitToEquation(units: UnitLookup): EquationNode {
     // Terms above fraction
@@ -32,7 +33,7 @@ function getExponent(unit: string, factor: number): EquationNode {
         return {
             type: 'power',
             a: { type: 'variable', name: unit },
-            b: { type: 'number', value: factor.toString() },
+            b: formatNumber(factor, { type: 'max', significantFigures: 3 }),
         }
     }
 }
